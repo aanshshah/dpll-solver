@@ -84,6 +84,26 @@ def backtracking(formula, assignment):
                     counter[literal] = weight ** -len(clause)
         return max(counter, key=counter.get)
 
+    def freeman(formula):
+        counter = {}
+        for clause in formula:
+            for literal in clause:
+                if literal in counter:
+                    if literal > 0:
+                        counter[literal] += 1
+                    else:
+                        counter[-literal] += - 1
+                else:
+                    if literal > 0:
+                        counter[literal] = 1
+                    else:
+                        counter[-literal] = - 1
+        max_p_literal = max(counter, key=counter.get)
+        max_n_literal = min(counter, key=counter.get)
+        if counter[max_p_literal] >= abs(counter[max_n_literal]):
+            return max_p_literal
+        return max_n_literal
+
     def unit_propagation(formula):
         assignment = []
         unit_clauses = [c for c in formula if len(c) == 1]
