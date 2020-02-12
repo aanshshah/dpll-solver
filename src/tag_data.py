@@ -4,9 +4,9 @@ import glob
 import time
 import random
 import numpy as np
-os.chdir("../input/random_unked_sub")
+os.chdir("../input/random_unked_sub_USABLE")
 
-from pysat.solvers import Glucose3
+from pysat.solvers import Minisat22
 
 
 
@@ -20,17 +20,47 @@ reset = False
 np_load_old = np.load
 np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
 
-for file in sorted(list(glob.glob("*.npy")),reverse=True):
-    problems_all.extend(np.load(file))
-    
+for i,file in enumerate(sorted(list(glob.glob("*.npy")),reverse=True)):
+    problems_all = np.load(file)
+    tagged_data = []
+    print("LOADED")
 
-for p in problems_all:
-    g = Glucose3()
-    for l in p:
-        g.add_clause(l)
-    print(g.solve())
+    seen_set = set()
+
+    solved = 0.0
+    total = 0
+
+    for p in problems_all:
+
+        if str(p) in seen_set:
+            continue
+        else:
+            seen_set.add(str(p))
+
+        if len(p) > 1000:
+           # print("passed")
+            continue
+
+        sat = False
+        # print(len(p))
+
+        with Minisat22(bootstrap_with=p) as m:
+        # g = Glucose3()
+        # for l in p:
+        #     g.add_clause(l)
+        # # # print("loaded")
+            if m.solve(): 
+                sat = True
+                solved+=1
+        total+=1
+
+        tagged_data.append((p,sat))
+
+        # if total % 1 == 0: print(solved,total,solved/total)
 
 
+    np.save(str(i)+"_tagged_data.npy",tagged_data)
+    print(solved,total,solved/total)
 
     # for x in range(5):
     #     reset = False

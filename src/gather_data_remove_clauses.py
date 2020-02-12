@@ -147,16 +147,16 @@ def backtracking(formula, assignment,heuristic,depth=0):
         return formula, assignment
 
 
-    
-    for p in [0.001,0.01,0.05,0.10,0.15,0.25]:
-        p = remove_random_clauses(formula,p)
-        if len(p) > 0:
-            problems_all.append(formula)
+    for x in range(1):
+        for p in [0.001,0.01,0.05,0.10,0.15,0.25]:
+            new_formula = remove_random_clauses(formula,p)
+            if len(new_formula) > 0:
+                problems_all.append(new_formula)
     global global_counter 
     global reset
     global_counter+=1
     # print(global_counter)
-    if global_counter > 1000:
+    if global_counter > 500:
         global_counter = 0
         reset = True
         return []
@@ -212,7 +212,7 @@ for file in sorted(list(glob.glob("*.cnf")),reverse=True):
 
 
 
-    for x in range(5):
+    for x in range(3):
         reset = False
         print("Using:",heuristic)
         print(x)
@@ -229,4 +229,4 @@ for file in sorted(list(glob.glob("*.cnf")),reverse=True):
         now = time.time()
         print("{} seconds elapsed".format(now - program_starts))
         print("\n")
-    np.save("random_unked_sub/"+file+"_remove_clauses_data.npy",problems_all)
+    np.save("random_unked_sub_USABLE/"+file+"_remove_clauses_data.npy",problems_all)
