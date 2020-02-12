@@ -47,17 +47,17 @@ def jeroslow_wang(formula, weight=2):
         for literal in clause:
             if literal in counter: counter[literal] += weight ** -len(clause)
             else: counter[literal] = weight ** -len(clause)
-    if counter:
-        return max(counter, key=counter.get)
-    else:
-        return None
+    results = [v for _,v in counter.items()]
+    return sum(results)/len(results)
+    
 
 
 for i,file in enumerate(sorted(list(glob.glob("*_tagged_data.npy")),reverse=True)):
     
     tagged_data = np.load(file)
     for d,l in tagged_data:
-    	data.append(d)
+    	
+
 
 
 
