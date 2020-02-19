@@ -50,6 +50,7 @@ def backtracking(formula, assignment):
     if not formula: return assignment
     #Jeroslow Wang Heuristic
     counter = {}
+    weight = 2
     for clause in formula:
         for literal in clause:
             if literal in counter: counter[literal] += weight ** -len(clause)

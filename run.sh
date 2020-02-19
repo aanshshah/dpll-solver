@@ -13,4 +13,4 @@ fi
 input=$1
 
 # Update this file with instructions on how to run your code given an input
-python3 src/approach4.py $input
+python3 src/solution.py $input
