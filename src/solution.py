@@ -1,6 +1,39 @@
 import sys
 import time
 
+def check_solution(clauses,solution):
+    #A validation script that takes a problem and solution, and confirms that the solution is valid
+
+    def var_to_literal(var,assignment):
+        assert assignment == 'true' or assignment == 'false' #Check that variable was assigned valid value
+        return var if assignment == 'true' else -1 * var
+
+    number_vars_in_solution = int(len(solution)/2) #number of variables in the solution
+    true_literals = []
+    for i in range(number_vars_in_solution):
+        true_literals.append(var_to_literal(solution[2*i],solution[2*i+1]))
+
+    true_literals_unique = set(true_literals) #unique true literals
+    assert len(true_literals) == len(true_literals_unique) #checks that no literals are assigned twice
+
+    unique_vars_in_problem = set()
+    for c in clauses:
+        for v in c:
+            unique_vars_in_problem.add(abs(v))
+            assert v in true_literals_unique or -1*v in true_literals_unique #check that every variable or its negation appears in solution
+
+    assert len(unique_vars_in_problem) == number_vars_in_solution #check that the problem and solution hhave same number of variables
+
+    success = False
+    for c in clauses:
+        for v in c:
+            if v in true_literals_unique:
+                success = True
+                break
+        assert success #check that every clause has a true literal
+
+
+
 def parse(filename):
     clauses = []
     for line in open(filename):
