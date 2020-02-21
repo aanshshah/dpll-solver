@@ -115,6 +115,7 @@ if solution:
             result.append("false")
         result[t] = abs(int(result[t]))
         t += 2
+    check_solution(clauses,solution)
     result = ' '.join([str(x) for x in result])
     print("Instance: {0} Time: {1} Result: SAT Solution {2}".format(sys.argv[1], end, result))
 else: 
