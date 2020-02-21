@@ -1,0 +1,3 @@
+Instance: input/C1065_064.cnf Time: 34.97403812408447 Result: UNSAT
+Instance: input/C1065_082.cnf Time: 29.901540994644165 Result: UNSAT
+Instance: C140 Time: -- Result: --

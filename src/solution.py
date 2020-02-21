@@ -20,6 +20,9 @@ def check_solution(clauses,solution):
     for c in clauses:
         for v in c:
             unique_vars_in_problem.add(abs(v))
+            if not (v in true_literals_unique or -1*v in true_literals_unique):
+                print(v)
+                print(true_literals_unique)
             assert v in true_literals_unique or -1*v in true_literals_unique #check that every variable or its negation appears in solution
 
     assert len(unique_vars_in_problem) == number_vars_in_solution #check that the problem and solution hhave same number of variables
@@ -36,6 +39,7 @@ def check_solution(clauses,solution):
 
 def parse(filename):
     clauses = []
+    all_vars = set()
     for line in open(filename):
         if line.startswith('c'): continue
         if line.startswith('p'):
@@ -44,8 +48,9 @@ def parse(filename):
         clause = []
         for x in line[:-2].split():
             clause.append(int(x))
+            all_vars.add(int(x))
         clauses.append(clause)
-    return clauses, n_vars
+    return clauses, n_vars, all_vars
 
 
 def binary_constraint_propagation(formula, unit):
@@ -98,12 +103,16 @@ def backtracking(formula, assignment):
     return solution
 
 
-clauses, n_vars = parse(sys.argv[1])
+clauses, n_vars, all_vars = parse(sys.argv[1])
 start = time.time()
 solution = backtracking(clauses, [])
 end = time.time() - start
 if solution:
-    solution += [x for x in range(1, n_vars + 1) if x not in solution and -x not in solution]
+    for x in range(1, n_vars+1):
+        if x not in solution and -x not in solution:
+            if x in all_vars or -x in all_vars:
+                solution.append(x)
+    # solution += [x for x in range(1, n_vars + 1) if x not in solution and -x not in solution]
     solution.sort(key=abs)
     result = []
     t = 0
@@ -115,7 +124,7 @@ if solution:
             result.append("false")
         result[t] = abs(int(result[t]))
         t += 2
-    check_solution(clauses,solution)
+    check_solution(clauses,result)
     result = ' '.join([str(x) for x in result])
     print("Instance: {0} Time: {1} Result: SAT Solution {2}".format(sys.argv[1], end, result))
 else: 
